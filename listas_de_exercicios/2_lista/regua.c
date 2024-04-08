@@ -13,6 +13,7 @@ void printMidDash(int size){
     d++;
     printMidDash(size);
 }
+
 void Subinterval(int subSize, int n){
     printf(".");
     if (i == subSize-1){
