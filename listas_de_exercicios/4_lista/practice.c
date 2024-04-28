@@ -8,20 +8,38 @@ struct celula *prox;
 
 void imprime_rec (celula *le);
 
-void mescla_listas (celula *l1, celula *l2, celula *l3) {
-    l1 = l1->prox, l2 = l2->prox;
-    for(;;l3 = l3->prox){
-        if(l1 != NULL && l2 != NULL){
-            if(l1->dado <= l2->dado){l3->prox = l1; l1 = l1->prox;}
-            else{l3->prox = l2; l2 = l2->prox;}
-        }
-        else if(l1 != NULL){l3->prox = l1; l1 = l1->prox;}
-        else if(l2 != NULL){l3->prox = l2; l2 = l2->prox;}
-        else{return;}
+void remove_depois(celula *p){
+    if(p->prox == NULL){
+       p->prox = NULL; 
     }
+    else{
+        p->prox = p->prox->prox;
+    }
+    return;
 }
 
-void ordena_lista (celula *le);
+void remove_elemento (celula *le, int x){
+    le = le->prox;
+    if(le == NULL){
+        return;
+    }
+    if(le->prox != NULL && le->prox->dado == x){
+        le->prox = le->prox->prox;
+        return;
+    }
+    remove_elemento (le, x);
+}
+
+void remove_todos_elementos (celula *le, int x){
+    le = le->prox;
+    if(le == NULL){
+        return;
+    }
+    if(le->prox != NULL && le->prox->dado == x){
+        le->prox = le->prox->prox;
+    }
+    remove_todos_elementos (le, x);
+}
 
 void main () {
     celula *lista = malloc(sizeof(celula));
@@ -48,9 +66,9 @@ void main () {
     c4->prox = NULL;
 
     c1->dado = 1;
-    c2->dado = 3;
+    c2->dado = 4;
     c3->dado = 5;
-    c4->dado = 7;
+    c4->dado = 4;
 
     d1->prox = d2;
     d2->prox = d3;
@@ -63,9 +81,8 @@ void main () {
     d4->dado = 8;
 
     imprime_rec(lista);
-    imprime_rec(lista2);
-    mescla_listas(lista, lista2, lista3);
-    imprime_rec(lista3);
+    remove_elemento(lista, 4);
+    imprime_rec(lista);
 }
 
 void imprime_rec (celula *le){
