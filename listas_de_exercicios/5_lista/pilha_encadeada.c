@@ -18,3 +18,14 @@ int empilha (celula *p, int x){
         return 1;
     }
 }
+
+int desempilha (celula *p, int *y){
+    celula *tmp = p->prox;
+    if(tmp == NULL) return 0;
+    else{
+        *y = tmp->dado;
+        p->prox = tmp->prox;
+        free(tmp);
+        return 1;
+    }
+}
