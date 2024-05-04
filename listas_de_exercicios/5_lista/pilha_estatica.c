@@ -31,25 +31,3 @@ int desempilha(pilha *p, int *y){
         return 1;
     }
 }
-
-int main (){
-    pilha *stack = malloc(sizeof(stack));
-    stack->N = 5;
-    stack->topo = 0;
-    stack->dados = (int*)malloc(stack->N * sizeof(int));
-    if(stack->dados == NULL){
-        printf("memory allocation error.\n");
-        exit(0);
-    }
-
-    empilha(stack, 1);
-    empilha(stack, 3);
-    empilha(stack, 6);
-    empilha(stack, 49);
-    empilha(stack, 69);
-    empilha(stack, 71);
-
-    for(int i = 0; i < stack->topo; i++){
-        printf("%d ", stack->dados[i]);
-    }
-}
