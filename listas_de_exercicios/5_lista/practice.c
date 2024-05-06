@@ -7,7 +7,10 @@ typedef struct fila {
 } fila;
 
 int resize(fila *f){
-
+    int *novo_vetor = calloc(f->N*2, sizeof(int));
+    int ultimo = f->u;
+    int primeiro = f->p;
+    
 }
 
 int enfileira (fila *f, int x){
@@ -15,7 +18,7 @@ int enfileira (fila *f, int x){
         f->u = 0;
     }
     if(f->u+1 == f->p){
-        
+        printf("estouro\n");
     }
     f->dados[f->u++] = x;
     return 1;
@@ -24,7 +27,7 @@ int enfileira (fila *f, int x){
 int main () {
     fila *queue = malloc(sizeof(fila));
     queue->N = 3;
-    queue->u = queue->p = 1;
+    queue->u = queue->p = 2;
     queue->dados = calloc(queue->N, sizeof(int));
 
     enfileira(queue, 10);
