@@ -6,9 +6,9 @@ typedef struct celula {
     struct celula *prox;
 } celula;
 
-void *enfileira (celula **f, int x){
+void enfileira (celula **f, int x){
     celula *novo = malloc(sizeof(celula));
-    if(novo == NULL) return NULL;
+    if(novo == NULL) return;
     novo->prox = (*f)->prox;
     (*f)->prox = novo;
     (*f)->dado = x;
