@@ -9,36 +9,9 @@ struct celula *prox;
 void imprime_rec (celula *le);
 
 void remove_depois(celula *p){
-    if(p->prox == NULL){
-       p->prox = NULL; 
-    }
-    else{
-        p->prox = p->prox->prox;
-    }
+    if(p->prox == NULL){p->prox = NULL;}
+    else{p->prox = p->prox->prox;}
     return;
-}
-
-void remove_elemento (celula *le, int x){
-    le = le->prox;
-    if(le == NULL){
-        return;
-    }
-    if(le->prox != NULL && le->prox->dado == x){
-        le->prox = le->prox->prox;
-        return;
-    }
-    remove_elemento (le, x);
-}
-
-void remove_todos_elementos (celula *le, int x){
-    le = le->prox;
-    if(le == NULL){
-        return;
-    }
-    if(le->prox != NULL && le->prox->dado == x){
-        le->prox = le->prox->prox;
-    }
-    remove_todos_elementos (le, x);
 }
 
 void main () {
@@ -66,8 +39,8 @@ void main () {
     c4->prox = NULL;
 
     c1->dado = 1;
-    c2->dado = 4;
-    c3->dado = 5;
+    c2->dado = 2;
+    c3->dado = 3;
     c4->dado = 4;
 
     d1->prox = d2;
@@ -81,7 +54,7 @@ void main () {
     d4->dado = 8;
 
     imprime_rec(lista);
-    remove_elemento(lista, 4);
+    remove_depois(c1);
     imprime_rec(lista);
 }
 
