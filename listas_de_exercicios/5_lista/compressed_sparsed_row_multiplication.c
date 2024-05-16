@@ -48,4 +48,7 @@ int main (){
     }
 
     for(int i = 0; i < m; i++) printf("%d\n", resultado[i]);
+    free(matriz);
+    free(vetor);
+    free(resultado);
 }
