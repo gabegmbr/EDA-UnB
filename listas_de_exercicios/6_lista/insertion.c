@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void insertion_sort(int v[], int l, int r){
     for(int i = l+1; i < r; i++){
@@ -12,8 +13,8 @@ void insertion_sort(int v[], int l, int r){
 }
 
 int main (){
-    int vetor[60000] = {3, 1, 7, 5, 4, 8, 2, 6};
     int n = 0;
+    int *vetor = malloc(sizeof(int)*n);
     int r = 0;
     while(scanf("%d", &n) != EOF){
         vetor[r] = n;
