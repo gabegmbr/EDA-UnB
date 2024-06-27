@@ -1,76 +1,65 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-/*
-pseudocodigo 
-
-presidente: 2 digitos
-senador: 3 digitos
-dep. fed: 4 digitos
-dep. est: 5 digitos
-
-listas encadeadas: presidentes, senadores, depFeds, depEsts
-algoritmo de ordenação: merge sort adaptado para listas encadeadas
-função mergeSort deverá ser adaptada para ordenar dois campos diferentes, "dados" e "candidato";
-mergeSort mode 1 = ordenação pelo campo "candidato";
-mergeSort mode 2 = ordenação pelo campo "dados";
-
-- receber quantidade de senadores, dep. fed, e dep. est.
-- iniciar caso de teste:
-    - receber número do candidato;
-    - chamar função calcularDigitos, que vai retornar para a variável digitos;
-    - se digitos é menor que 2 ou candidato é menor que zero, votosInv++;
-    - se digitos é maior que 2:
-        (usar case ao invés de if)
-        se digitos é igual a 2:
-            buscar nº do presidente na lista encadeada presidentes
-            se busca é positiva, busca->dados++ e votosVal++;
-            se busca é nula, enfileirar novo presidente.
-        se digitos é igual a 3:
-            buscar nº do presidente na lista encadeada senadores
-            se busca é positiva, busca->dados++ e votosVal++;
-            se busca é nula, enfileirar novo senador.
-        se digitos é igual a 4:
-            buscar nº do presidente na lista encadeada depFeds
-            se busca é positiva, busca->dados++ e votosVal++;
-            se busca é nula, enfileirar novo deputado federal.
-        se digitos é igual a 5:
-            buscar nº do presidente na lista encadeada depEsts
-            se busca é positiva, busca->dados++ e votosVal++;
-            se busca é nula, enfileirar novo deputado estadual.
-        importante: ao inserir novo candidato, ordenar lista pelo campo "candidato".
-    fim do caso de teste quando scanf == EOF
-- printar votos válidos e inválidos
-- cálculo para determinar o presidente:
-    percorrer lista para calcular quantidade total de votos para presidente;
-    percorrer lista novamente para calcular porcentagem de voto de cada presidente.
-    percorrer a lista NOVAMENTE à procura do candidato com porcentagem maior que 51%.
-    guardar o candidato numa variável auxiliar que deve ser inicializada = NULL;
-    se a variável auxiliar for == NULL, printar "Segundo turno";
-    caso contrário, printar o valor do candidato armazenado na variável auxiliar.
-    
-    (essa definitivamente não é a maneira mais eficiente de realizar isso)
-- ordenar todas as listas pelo campo "dados"
-
-*/
 typedef struct celula {
-    int dado;
+    int frequencia;
     int candidato;
     int porcentagem;
     struct celula *prox;
 } celula;
 
-void enfileira (celula **f, int x, int c){
-    celula *novo = malloc(sizeof(celula));
-    novo->dado = x;
-    novo->candidato = c;
-    novo->prox = (*f);
-    (*f) = novo;
+celula *pres, *sen, *depFed, *depEst;
+
+void swap(int *a, int *b){
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+void selection_sort (int v[], int l, int r){
+    int i = l;
+    while(i != r-1){
+        int menor = i;
+        for(int j = i; j < r; j++){
+            if(v[j] < v[menor]){
+                menor = j;
+            }
+        }
+        swap(&v[i], &v[menor]);
+        i++;
+    }
+}
+
+void mediana(int *arr, int l, int r){
+    int meio = (l+r)/2;
+    swap(&arr[meio], &arr[r-1]);
+    if(arr[l] > arr[r-1]){
+        swap(&arr[l], &arr[r-1]);
+    }
+    if(arr[l] > arr[r]){
+        swap(&arr[l], &arr[r]);
+    }
+    if(arr[r-1] > arr[r]){
+        swap(&arr[r-1], &arr[r]);
+    }
+}
+
+int partition(int *arr, int l, int r){
+    int pivot = r;
+    int j = -1;
+    for(int i = 0; i < r; i++){
+        if(j > i) break;
+        if(arr[i] <= arr[pivot]){
+            j++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[j+1], &arr[pivot]);
+    return j+1;
 }
 
 int calcularDigitos(int n){
-    int count;
+    int count = 0;
     while(n != 0){
         n = n/10;
         count++;
@@ -78,6 +67,65 @@ int calcularDigitos(int n){
     return count;
 }
 
-int main (){
+void quickSort(int *arr, int l, int r){
+    if (l <= r){
+        if(r-l <= 100) return selection_sort(arr, l, r+1);
+        mediana(arr, l, r);
+        int pi = partition(arr, l, r);
+        quickSort(arr, l, pi-1);
+        quickSort(arr, pi+1, r);
+    }
+}
 
+void enfileira (celula **f, int fr, int c){
+    celula *novo = malloc(sizeof(celula));
+    novo->frequencia = fr;
+    novo->candidato = c;
+    novo->prox = (*f);
+    (*f) = novo;
+}
+
+void analisa(int *arr, int l, int r, int *votosPres){
+    if(l < r){
+        int frequencia = 0;
+        int candidato = arr[l];
+        int i;
+        for(i = l; i < r && arr[i] == candidato; i++, frequencia++);
+        int digitos = calcularDigitos(candidato);
+        switch(digitos){
+            case 2:
+            enfileira(&pres, frequencia, candidato);
+            votosPres+=frequencia;
+            break;
+            case 3:
+            enfileira(&sen, frequencia, candidato);
+            break;
+            case 4:
+            enfileira(&depFed, frequencia, candidato);
+            break;
+            case 5:
+            enfileira(&depEst, frequencia, candidato);
+            break;
+        }
+        analisa(arr, i, r, votosPres);
+    }
+}
+int main (){
+    pres = sen = depFed = depEst = NULL;
+    int qtdSen, qtdDepFed, qtdDepEst;
+    int votosPres = 0;
+    scanf("%d %d %d", &qtdSen, &qtdDepFed, &qtdDepEst);
+    int votos[10000];
+    int candidato;
+    int votosVal = 0;
+    int votosInv = 0;
+    while(scanf("%d", &candidato) == 1){
+        if(candidato >= 10){
+            votos[votosVal++] = candidato;
+        } else{
+            votosInv++;
+        }
+    }
+    quickSort(votos, 0, votosVal-1);
+    analisa(votos, 0, votosVal, &votosPres);
 }
